@@ -10,8 +10,8 @@ Daily Planner combines a structured day plan with an infinite, freeform canvas:
 
 - **Lead with one priority.** Keep the day's Most Important Task prominent, then mark it complete when the work is done.
 - **Handle the practical details.** Add, edit, complete, reorder, or carry unfinished tasks into the next day.
-- **Think spatially.** Double-click anywhere to create text, format it as H1–H3 or body copy, and drag it into place.
-- **Sketch naturally.** Right-drag to draw, choose from five pen weights, move strokes, or erase with a full-gesture undo.
+- **Map ideas visually.** Double-click to create formatted notes, arrange them spatially, then connect the thinking with hand-drawn lines, arrows, and lightweight diagrams.
+- **Sketch naturally.** Right-drag to draw, choose from five pen weights, move notes or strokes, or erase with a full-gesture undo.
 - **Move through an unlimited workspace.** Pan in any direction with drag, scroll, middle mouse, or Space-drag. Every day remembers its own view.
 - **Stay distraction-free.** The paper-inspired interface keeps controls close without turning the workspace into a dashboard.
 
