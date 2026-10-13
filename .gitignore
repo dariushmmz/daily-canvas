@@ -1,0 +1,33 @@
+# Operating-system and editor files
+.DS_Store
+Thumbs.db
+Desktop.ini
+.idea/
+.vscode/
+*.swp
+*~
+
+# Local environments and generated development files
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+node_modules/
+*.log
+*.tmp
+*.bak
+_*.py
+_*.png
+.demo-frames/
+
+# Local data and backups
+.env
+.env.*
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+backups/
+.backup/
+daily-planner-backup-*.json

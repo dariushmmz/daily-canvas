@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Day planner</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='12' fill='%232B45D6'/%3E%3C/svg%3E">
+  <script>
+    // Resolve the saved theme before CSS paints. No write happens here.
+    (function () {
+      var preference = "system";
+      try {
+        var raw = localStorage.getItem("daily-planner-v1");
+        var data = raw ? JSON.parse(raw) : null;
+        var saved = data && data.meta && data.meta.theme;
+        if (saved === "light" || saved === "dark" || saved === "system") preference = saved;
+      } catch (_) {}
+      var dark = matchMedia && matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.dataset.theme = preference === "system" ? (dark ? "dark" : "light") : preference;
+    }());
+  </script>
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body class="loading">
+  <div id="canvas" tabindex="0" aria-label="Infinite canvas. Double-click to add text, right-drag to draw, and drag empty space to pan.">
+    <div id="world">
+      <svg id="drawing-layer" aria-hidden="true"><g id="strokes"></g></svg>
+      <div id="blocks-layer"></div>
+    </div>
+    <div id="eraser-cursor" aria-hidden="true"></div>
+  </div>
+
+  <div id="toolbar" role="toolbar" aria-label="Text style">
+    <button type="button" data-style="h1" title="Title 1 (Alt+1)">H1</button>
+    <button type="button" data-style="h2" title="Title 2 (Alt+2)">H2</button>
+    <button type="button" data-style="h3" title="Title 3 (Alt+3)">H3</button>
+    <button type="button" data-style="body" title="Body (Alt+4)">Aa</button>
+    <button type="button" data-action="delete" title="Delete this block">Delete</button>
+  </div>
+
+  <div id="top" data-ui>
+    <div class="bar">
+      <button type="button" id="prev" aria-label="Previous day">‹</button>
+      <input type="date" id="date" aria-label="Date">
+      <button type="button" id="next" aria-label="Next day">›</button>
+      <button type="button" id="today">Today</button>
+      <div id="canvas-tools" role="toolbar" aria-label="Canvas tools">
+        <div id="pen-levels" aria-label="Pen thickness"><span>Pen</span>
+          <button type="button" data-pen="1" style="--level:1" aria-label="Pen thickness 1" aria-pressed="false"></button>
+          <button type="button" data-pen="2" style="--level:2" aria-label="Pen thickness 2" aria-pressed="false"></button>
+          <button type="button" data-pen="3" style="--level:3" aria-label="Pen thickness 3" aria-pressed="true"></button>
+          <button type="button" data-pen="4" style="--level:4" aria-label="Pen thickness 4" aria-pressed="false"></button>
+          <button type="button" data-pen="5" style="--level:5" aria-label="Pen thickness 5" aria-pressed="false"></button>
+        </div>
+        <button type="button" id="eraser-toggle" aria-pressed="false" title="Erase strokes with right-drag (E)">Eraser</button>
+        <button type="button" id="undo-canvas" disabled title="Undo canvas action (Ctrl+Z)">Undo</button>
+        <button type="button" id="reset-view" title="Return to the canvas origin">Center</button>
+      </div>
+      <span class="spacer"></span>
+      <span id="status" aria-live="polite">Saved</span>
+      <button type="button" id="data-menu-toggle" aria-expanded="false" aria-controls="data-panel">Data</button>
+      <button type="button" id="theme" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button>
+    </div>
+    <div id="mit">
+      <input type="checkbox" id="mit-done" aria-label="Mark the most important task done">
+      <textarea id="mit-text" rows="1" maxlength="500" aria-label="Most important task" placeholder="What is the ONE most important thing today?"></textarea>
+    </div>
+  </div>
+
+  <aside id="todo" data-ui>
+    <header>
+      <h2>Also today</h2>
+      <span id="progress"></span>
+      <button type="button" id="collapse" aria-label="Collapse list" aria-expanded="true">–</button>
+    </header>
+    <ul id="tasks"></ul>
+    <div class="add-wrap"><input id="add" maxlength="500" placeholder="Add a task, then press Enter" aria-label="New task"></div>
+    <div class="foot"><button type="button" id="carry">Carry over unfinished from yesterday</button></div>
+  </aside>
+
+  <section id="data-panel" data-ui hidden aria-label="Planner data">
+    <div class="data-panel-head"><strong>Planner data</strong><button type="button" id="data-panel-close" aria-label="Close">×</button></div>
+    <p id="storage-usage">0 B stored</p>
+    <p id="storage-notice" role="alert" hidden></p>
+    <div class="data-actions">
+      <button type="button" id="export">Export backup</button>
+      <button type="button" id="import">Import backup</button>
+      <input id="import-file" type="file" accept="application/json,.json" hidden>
+      <button type="button" id="delete-all" class="danger">Delete all</button>
+    </div>
+  </section>
+
+  <div id="undo-toast" role="status" aria-live="polite" hidden>
+    <span id="undo-message"></span>
+    <button type="button" id="toast-undo">Undo</button>
+    <button type="button" id="toast-dismiss" aria-label="Dismiss">×</button>
+  </div>
+
+  <dialog id="confirm-dialog" aria-labelledby="confirm-title" aria-describedby="confirm-message">
+    <form method="dialog">
+      <h2 id="confirm-title">Are you sure?</h2>
+      <p id="confirm-message"></p>
+      <div class="dialog-actions">
+        <button type="submit" value="cancel" id="confirm-cancel">Cancel</button>
+        <button type="submit" value="confirm" id="confirm-accept" class="danger">Continue</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="live-region" class="sr-only" aria-live="assertive"></div>
+</body>
+</html>
