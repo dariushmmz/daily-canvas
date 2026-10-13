@@ -2,7 +2,7 @@
 
 **A calm daily workspace for focused priorities, practical tasks, visual thinking, and quick sketches.** No accounts, installation, or internet connection required.
 
-![Daily Planner walkthrough](assets/daily-planner-demo.gif)
+![Daily Planner visual workflow](assets/daily-planner-workflow.gif)
 
 ## Plan without breaking your flow
 
@@ -57,7 +57,7 @@ Data belongs to the current browser and file origin. Moving the project, clearin
 ├── app.js                      # State, persistence, rendering, and interactions
 ├── style.css                   # Original paper-and-ink interface
 └── assets/
-    └── daily-planner-demo.gif  # Product walkthrough captured from the app
+    └── daily-planner-workflow.gif  # Product walkthrough captured from the app
 ```
 
 The app intentionally ships without a package manifest, framework, CDN, web font, service worker, or build output.
